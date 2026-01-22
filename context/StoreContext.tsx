@@ -18,12 +18,12 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Initialize with LocalStorage or Constants
   const [courses, setCourses] = useState<Course[]>(() => {
-    const saved = localStorage.getItem('iademy_courses');
+    const saved = localStorage.getItem('advance_courses');
     return saved ? JSON.parse(saved) : INITIAL_COURSES;
   });
 
   const [users, setUsers] = useState<User[]>(() => {
-    const saved = localStorage.getItem('iademy_users');
+    const saved = localStorage.getItem('advance_users');
     return saved ? JSON.parse(saved) : INITIAL_USERS;
   });
 
@@ -31,11 +31,11 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   // Persistence
   useEffect(() => {
-    localStorage.setItem('iademy_courses', JSON.stringify(courses));
+    localStorage.setItem('advance_courses', JSON.stringify(courses));
   }, [courses]);
 
   useEffect(() => {
-    localStorage.setItem('iademy_users', JSON.stringify(users));
+    localStorage.setItem('advance_users', JSON.stringify(users));
   }, [users]);
 
   const addCourse = (course: Course) => {

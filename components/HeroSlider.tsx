@@ -42,7 +42,7 @@ export const HeroSlider: React.FC = () => {
           <div className="absolute inset-0 z-20 flex flex-col justify-center container mx-auto px-4 md:px-8 lg:px-16">
             <div className="max-w-2xl animate-[fadeInUp_1s_ease-out]">
               <span className="inline-block py-1 px-3 rounded-full bg-cyan-500/20 text-cyan-300 text-sm font-semibold mb-4 border border-cyan-500/30">
-                Novedades IADEMY
+                Novedades ADVANCE
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
                 {slide.title}

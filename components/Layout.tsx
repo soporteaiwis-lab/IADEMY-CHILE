@@ -27,7 +27,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
               <Phone size={12} /> +56 2 2345 6789
             </span>
             <span className="flex items-center gap-1 hover:text-white cursor-pointer transition-colors hidden sm:flex">
-              <Mail size={12} /> contacto@iademy.cl
+              <Mail size={12} /> contacto@advance.cl
             </span>
             <span className="hidden md:flex text-cyan-500 font-semibold">
               ¡Diplomados en Salud y Educación con matrícula gratis!
@@ -56,10 +56,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
           {/* Logo */}
           <div className="flex items-center gap-2 flex-shrink-0 cursor-pointer" onClick={() => onNavigate('home')}>
             <div className="bg-gradient-to-tr from-teal-600 to-cyan-500 text-white p-2 rounded-lg">
-              <div className="w-6 h-6 flex items-center justify-center font-bold text-xl">I</div>
+              <div className="w-6 h-6 flex items-center justify-center font-bold text-xl">A</div>
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-black text-slate-800 tracking-tight leading-none">IADEMY</span>
+              <span className="text-2xl font-black text-slate-800 tracking-tight leading-none">ADVANCE</span>
               <span className="text-[10px] font-bold text-cyan-600 tracking-widest uppercase">Salud & Educación</span>
             </div>
           </div>
@@ -224,9 +224,9 @@ export const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
             <div>
               <div className="flex items-center gap-2 mb-6">
                  <div className="bg-cyan-600 text-white p-1.5 rounded-md">
-                   <span className="font-bold text-lg">I</span>
+                   <span className="font-bold text-lg">A</span>
                  </div>
-                 <span className="text-2xl font-bold text-white">IADEMY</span>
+                 <span className="text-2xl font-bold text-white">ADVANCE</span>
               </div>
               <p className="text-slate-400 text-sm leading-relaxed mb-6">
                 Líderes en formación continua para profesionales de la salud y educación en Chile. Cursos certificados y OTEC.
@@ -269,14 +269,14 @@ export const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
                 </li>
                 <li className="flex items-center gap-3">
                   <Mail className="text-cyan-500" size={18} />
-                  <span>contacto@iademy.cl</span>
+                  <span>contacto@advance.cl</span>
                 </li>
               </ul>
             </div>
           </div>
           <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
              <p className="text-sm text-slate-500">
-               © 2024 IADEMY CHILE. Todos los derechos reservados.
+               © 2024 ADVANCE CHILE. Todos los derechos reservados.
              </p>
           </div>
         </div>
