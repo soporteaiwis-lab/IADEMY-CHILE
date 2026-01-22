@@ -8,8 +8,17 @@ export interface Course {
   price: number;
   image: string;
   category: string;
+  description?: string; // New field for detailed info
   isNew?: boolean;
   isBestseller?: boolean;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'student';
+  joinedDate: string;
 }
 
 export interface NavItem {

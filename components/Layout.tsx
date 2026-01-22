@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Search, User, Menu, X, Phone, Mail, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, MapPin } from 'lucide-react';
+import { ShoppingCart, Search, User, Menu, X, Phone, Mail, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, MapPin, LogOut, Settings } from 'lucide-react';
 import { CATEGORIES } from '../constants';
+import { useStore } from '../context/StoreContext';
+import { LoginModal } from './LoginModal';
 
 interface LayoutProps {
   children: React.ReactNode;
+  onNavigate: (view: string) => void;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, onNavigate }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const { currentUser, logout, isAdmin } = useStore();
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
+      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+      
       {/* 1. TOP BAR */}
       <div className="bg-slate-900 text-slate-300 text-xs py-2 border-b border-slate-800">
         <div className="container mx-auto px-4 flex justify-between items-center">
@@ -23,7 +30,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Mail size={12} /> contacto@iademy.cl
             </span>
             <span className="hidden md:flex text-cyan-500 font-semibold">
-              ¡Cursos de IA con 80% de descuento esta semana!
+              ¡Diplomados en Salud y Educación con matrícula gratis!
             </span>
           </div>
           <div className="flex gap-3">
@@ -47,13 +54,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </button>
 
           {/* Logo */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="bg-gradient-to-tr from-blue-700 to-cyan-500 text-white p-2 rounded-lg">
+          <div className="flex items-center gap-2 flex-shrink-0 cursor-pointer" onClick={() => onNavigate('home')}>
+            <div className="bg-gradient-to-tr from-teal-600 to-cyan-500 text-white p-2 rounded-lg">
               <div className="w-6 h-6 flex items-center justify-center font-bold text-xl">I</div>
             </div>
             <div className="flex flex-col">
               <span className="text-2xl font-black text-slate-800 tracking-tight leading-none">IADEMY</span>
-              <span className="text-[10px] font-bold text-cyan-600 tracking-widest uppercase">Tecnología & IA</span>
+              <span className="text-[10px] font-bold text-cyan-600 tracking-widest uppercase">Salud & Educación</span>
             </div>
           </div>
 
@@ -65,7 +72,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               </button>
               <input 
                 type="text" 
-                placeholder="¿Qué quieres aprender hoy? Ej: Python, ChatGPT..." 
+                placeholder="Busca diplomados, cursos clínicos, docencia..." 
                 className="flex-1 px-4 py-2.5 bg-transparent outline-none text-slate-700 placeholder-slate-400"
               />
               <button className="px-6 bg-cyan-600 hover:bg-cyan-700 text-white transition-colors">
@@ -86,10 +93,31 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <ShoppingCart size={24} />
                 <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold border-2 border-white group-hover:scale-110 transition-transform">0</span>
               </button>
-              <button className="hidden sm:flex items-center gap-2 hover:text-cyan-600 transition-colors">
-                <User size={24} />
-                <span className="text-sm font-medium hidden lg:inline">Ingresar</span>
-              </button>
+              
+              {currentUser ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-bold text-slate-800 hidden sm:block">Hola, {currentUser.name.split(' ')[0]}</span>
+                  {isAdmin && (
+                    <button 
+                      onClick={() => onNavigate('admin')}
+                      className="bg-slate-800 text-white p-2 rounded-full hover:bg-cyan-600 transition-colors" title="Panel Master"
+                    >
+                      <Settings size={18} />
+                    </button>
+                  )}
+                  <button onClick={logout} className="text-red-500 hover:text-red-700 p-1" title="Salir">
+                    <LogOut size={20} />
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setShowLogin(true)}
+                  className="hidden sm:flex items-center gap-2 hover:text-cyan-600 transition-colors"
+                >
+                  <User size={24} />
+                  <span className="text-sm font-medium hidden lg:inline">Ingresar</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -105,7 +133,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 onMouseEnter={() => setIsCategoryOpen(true)}
                 onMouseLeave={() => setIsCategoryOpen(false)}
               >
-                <Menu size={18} /> Explorar Cursos
+                <Menu size={18} /> Áreas de Estudio
               </button>
               {/* Dropdown Menu */}
               {isCategoryOpen && (
@@ -126,10 +154,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </div>
               )}
             </li>
-            <li><a href="#" className="block px-6 py-4 hover:bg-slate-700 text-sm font-medium transition-colors">Inicio</a></li>
-            <li><a href="#" className="block px-6 py-4 hover:bg-slate-700 text-sm font-medium transition-colors">Rutas de Aprendizaje</a></li>
-            <li><a href="#" className="block px-6 py-4 hover:bg-slate-700 text-sm font-medium transition-colors">Empresas</a></li>
-            <li><a href="#" className="block px-6 py-4 hover:bg-slate-700 text-sm font-medium transition-colors text-cyan-400">Ofertas Flash</a></li>
+            <li><button onClick={() => onNavigate('home')} className="block px-6 py-4 hover:bg-slate-700 text-sm font-medium transition-colors">Inicio</button></li>
+            <li><a href="#" className="block px-6 py-4 hover:bg-slate-700 text-sm font-medium transition-colors">Salud</a></li>
+            <li><a href="#" className="block px-6 py-4 hover:bg-slate-700 text-sm font-medium transition-colors">Educación</a></li>
+            <li><a href="#" className="block px-6 py-4 hover:bg-slate-700 text-sm font-medium transition-colors text-cyan-400">Convenios Empresas</a></li>
           </ul>
           <div>
              <a href="#" className="bg-slate-700 hover:bg-slate-600 px-5 py-2 rounded-full text-sm font-semibold transition-colors border border-slate-600">
@@ -159,27 +187,24 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             <h3 className="text-xs font-bold text-slate-400 uppercase mb-4 tracking-wider">Navegación</h3>
             <ul className="space-y-2 mb-8">
-              <li><a href="#" className="block py-2 text-slate-700 font-medium hover:text-cyan-600">Inicio</a></li>
-              <li><a href="#" className="block py-2 text-slate-700 font-medium hover:text-cyan-600">Todos los Cursos</a></li>
-              <li><a href="#" className="block py-2 text-slate-700 font-medium hover:text-cyan-600">Promociones</a></li>
-              <li><a href="#" className="block py-2 text-slate-700 font-medium hover:text-cyan-600">Empresas</a></li>
-              <li><a href="#" className="block py-2 text-slate-700 font-medium hover:text-cyan-600">Contacto</a></li>
-            </ul>
-
-            <h3 className="text-xs font-bold text-slate-400 uppercase mb-4 tracking-wider">Categorías</h3>
-            <ul className="space-y-2 mb-8">
-               {CATEGORIES.slice(0, 5).map((cat, i) => (
-                 <li key={i}><a href="#" className="block py-2 text-slate-600 hover:text-cyan-600 text-sm">{cat}</a></li>
-               ))}
+              <li><button onClick={() => {onNavigate('home'); setIsMobileMenuOpen(false)}} className="block py-2 text-slate-700 font-medium hover:text-cyan-600">Inicio</button></li>
+              <li><a href="#" className="block py-2 text-slate-700 font-medium hover:text-cyan-600">Salud</a></li>
+              <li><a href="#" className="block py-2 text-slate-700 font-medium hover:text-cyan-600">Educación</a></li>
+              {isAdmin && (
+                <li><button onClick={() => {onNavigate('admin'); setIsMobileMenuOpen(false)}} className="block py-2 text-purple-700 font-bold hover:text-purple-900">Panel Master</button></li>
+              )}
             </ul>
 
             <div className="pt-6 border-t border-slate-100">
-              <a href="#" className="flex items-center justify-center gap-2 w-full bg-cyan-600 text-white py-3 rounded-lg font-bold mb-3">
-                <User size={18} /> Iniciar Sesión
-              </a>
-              <a href="#" className="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3 rounded-lg font-bold">
-                 <MessageCircle size={18} /> Ayuda WhatsApp
-              </a>
+              {!currentUser ? (
+                <button onClick={() => {setShowLogin(true); setIsMobileMenuOpen(false)}} className="flex items-center justify-center gap-2 w-full bg-cyan-600 text-white py-3 rounded-lg font-bold mb-3">
+                  <User size={18} /> Iniciar Sesión
+                </button>
+              ) : (
+                <button onClick={logout} className="flex items-center justify-center gap-2 w-full bg-slate-200 text-slate-800 py-3 rounded-lg font-bold mb-3">
+                  <LogOut size={18} /> Cerrar Sesión
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -204,36 +229,29 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                  <span className="text-2xl font-bold text-white">IADEMY</span>
               </div>
               <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                Transformando carreras a través de la educación en Inteligencia Artificial y tecnologías emergentes. Certificación validada por líderes de la industria.
+                Líderes en formación continua para profesionales de la salud y educación en Chile. Cursos certificados y OTEC.
               </p>
-              <div className="flex gap-4">
-                <a href="#" className="bg-slate-800 p-2 rounded-full hover:bg-cyan-600 hover:text-white transition-colors"><Facebook size={18} /></a>
-                <a href="#" className="bg-slate-800 p-2 rounded-full hover:bg-cyan-600 hover:text-white transition-colors"><Instagram size={18} /></a>
-                <a href="#" className="bg-slate-800 p-2 rounded-full hover:bg-cyan-600 hover:text-white transition-colors"><Linkedin size={18} /></a>
-              </div>
             </div>
 
             {/* Column 2: Links */}
             <div>
-              <h3 className="text-white font-bold mb-6 text-lg">Enlaces Rápidos</h3>
+              <h3 className="text-white font-bold mb-6 text-lg">Institucional</h3>
               <ul className="space-y-3 text-sm">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Sobre Nosotros</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Nuestros Instructores</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Blog de Tecnología</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Aula Virtual</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Quienes Somos</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Cuerpo Docente</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Certificaciones</a></li>
                 <li><a href="#" className="hover:text-cyan-400 transition-colors">Trabaja con Nosotros</a></li>
               </ul>
             </div>
 
             {/* Column 3: Categories */}
             <div>
-              <h3 className="text-white font-bold mb-6 text-lg">Cursos Populares</h3>
+              <h3 className="text-white font-bold mb-6 text-lg">Áreas Destacadas</h3>
               <ul className="space-y-3 text-sm">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Python para IA</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Machine Learning</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Prompt Engineering</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Marketing con IA</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Ciberseguridad</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Diplomados en Salud</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Gestión Educativa</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Inclusión</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Telemedicina</a></li>
               </ul>
             </div>
 
@@ -256,18 +274,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               </ul>
             </div>
           </div>
-
           <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
              <p className="text-sm text-slate-500">
                © 2024 IADEMY CHILE. Todos los derechos reservados.
              </p>
-             <div className="flex gap-4">
-               {/* Payment Methods Placeholders - using text for simplicity */}
-               <span className="text-xs bg-slate-800 px-2 py-1 rounded border border-slate-700 text-slate-400">VISA</span>
-               <span className="text-xs bg-slate-800 px-2 py-1 rounded border border-slate-700 text-slate-400">MasterCard</span>
-               <span className="text-xs bg-slate-800 px-2 py-1 rounded border border-slate-700 text-slate-400">WebPay</span>
-               <span className="text-xs bg-slate-800 px-2 py-1 rounded border border-slate-700 text-slate-400">PayPal</span>
-             </div>
           </div>
         </div>
       </footer>
